@@ -1,0 +1,1 @@
+web: gunicorn dementorBot.wsgi --log-file -
