@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>DementorBot</title>
+    <!--SUPPORT PACKAGES-->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab|Roboto:400,700,900" rel="stylesheet">
+    <script src="https://use.fontawesome.com/7867cd55e8.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--CSS-->
+
+    <style>
+        div.logo {
+            max-width: 500px;
+        }
+
+        .form-group {
+            max-width: 750px;
+            position: relative;
+        }
+
+        body {
+            font-size: 16px;
+            font-family: 'Roboto', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(rgb(10, 10, 10), rgb(70, 70, 70));
+            position: relative;
+            transition: margin-left 0.4s;
+        }
+
+        body.bactive {
+            margin-left:350px;
+            transition: margin-left 0.4s;
+        }
+
+        #top {
+            background: #444;
+            border-radius: 5px 5px 0 0;
+            padding: 5px;
+        }
+
+        #top img {
+            height:45px;
+            width: auto;
+        }
+        .form-control {
+            text-align: center;
+            border-radius: 24px;
+            font-size: 18px;
+            height: 44px;
+        }
+
+        .mic {
+            position: absolute;
+            right: 24px;
+            top: 11px;
+            font-size: 24px !important;
+            color: #999;
+        }
+
+        .response {
+            position: relative;
+            padding: 25px;
+            color: #333;
+            max-width: 500px;
+            background: #eee;
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+            border-radius: 19px;
+            box-shadow: 5px 5px 0px rgba(10, 175, 77, 0.86);
+        }
+        .response p {
+            font-size: 28px;
+            line-height: 1.25em;
+            font-family: 'Roboto Slab';
+        }
+        .response:after {
+            content: "";
+            position: absolute;
+            bottom: -40px;
+            left: 50px;
+            border: 20px solid transparent;
+            border-top-color: #eee;
+            display: block;
+            width: 0;
+        }
+        .response:before {
+            content: "";
+            position: absolute;
+            bottom: -45px;
+            left: 55px;
+            border: 20px solid transparent;
+            border-top-color: rgba(10, 175, 77, 0.86);
+            display: block;
+            width: 0;
+        }
+
+        .topnav {
+            background: #2d2d2d;
+            color: #949494;
+            font-size: 10px;
+            padding: 8px;
+        }
+
+        #chat {
+            position: absolute;
+            top:2vh;
+            bottom:2vh;
+            width:100vw;
+            max-width: 750px;
+            background: #fff;
+            margin: 2% auto; /* Will not center vertically and won't work in IE6/7. */
+            left: 0;
+            right: 0;
+            border-radius: 5px;
+            box-shadow: 0 0 25px rgba(0,0,0,0.9);
+            display: flex;
+            flex-direction:column;
+            justify-content: space-between;
+
+        }
+
+        #inputdiv {
+            padding: 0 10px;
+            padding-top: 12px;
+            background: #ddd;
+            border-radius: 0 0 5px 5px;
+            border-top:1px solid #d0d0d0;
+            box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+        }
+
+        #botContext {
+            flex-grow:2;
+            overflow: scroll;
+            position:   relative;
+            margin: 10px;
+        }
+
+        #context {
+            bottom:0;
+            max-height: 100%;
+            overflow: scroll;
+            position: absolute;
+            width: 100%;
+        }
+
+        #context span, #context li {
+            display: block;
+        }
+
+        #context span {
+            font-weight: bold;
+        }
+
+        #context span:before {
+            content: "Bot:";
+            width:45px;
+            display: inline-block;
+            font-weight: bold;
+            color: rgb(22, 191, 90);
+        }
+
+        #context li:before {
+            content: "Me:";
+            width:45px;
+            display: inline-block;
+            font-weight: bold;
+            color: rgb(45, 89, 189);
+        }
+
+        #context .spacer {
+            margin-top: 10px;
+        }
+
+        .cd:last-child {
+            padding-bottom: 1em;
+        }
+
+        #behind {
+            position: fixed;
+            left:0;
+            top:2vh;
+            bottom:2vh;
+            width: 30%;
+            box-shadow: 0 0 25px rgba(0,0,0,0.9);
+            background: #FFF;
+            z-index: 99;
+            transition: left 0.4s;
+        }
+
+        #bar {
+            position: absolute;
+            width:35px;
+            right:-35px;
+            top:0;
+            bottom:0;
+            height:100%;
+            background: #0cca58;
+            border-radius: 0 5px 5px 0;
+            font-weight: bold;
+            color: #fff;
+            z-index: 99;
+        }
+
+        .vertical-text {
+            transform: rotate(90deg);
+            transform-origin: left top 0;
+            float: left;
+            white-space: nowrap;
+            position: relative;
+            left: 27px;
+            top: 20px;
+        }
+
+        #behind.nactive {
+            left: -30%;
+            transition: left 0.4s;
+        }
+
+        #bar a {
+            color:inherit;
+            text-decoration: none;
+        }
+
+        #behindContent {
+            padding:15px;
+            max-height: 98%;
+            overflow: scroll;
+        }
+        .divider {
+            height:1px;
+            background: #aaa;
+            width:95%;
+        }
+
+        blockquote {
+            border: 1px solid #aaa;
+            background: #eee;
+            border-radius: 5px;
+            font-family: 'Roboto Slab';
+        }
+
+        #keywords_cont {
+            display: flex;
+            flex-wrap: wrap;
+            padding:7px;
+        }
+
+        #keywords_cont div {
+            background: #ffffff;
+            padding: 8px;
+            margin: 3px;
+            box-shadow: 2px 2px 3px rgba(0,0,0,0.1);
+        }
+        #path {
+            display: flex;
+            flex-wrap: wrap;
+            padding:7px;
+
+        }
+
+        div.path div {
+            background: #ffffff;
+            padding: 8px;
+            margin: 3px;
+            box-shadow: 2px 2px 3px rgba(0,0,0,0.1);
+            display: inline-block;
+        }
+
+        #path div:after {
+            content: " >> ";
+        }
+
+        #path div:last-of-type:after {
+            content: "";
+        }
+
+        .green {
+            color:green;
+        }
+
+        .red {
+            color:red;
+        }
+
+
+    </style>
+    <!--ANGULAR APP-->
+    <script src="{% static 'chat/dementor.js' %}"></script>
+</head>
+{% verbatim %}
+<body ng-app="dementor" ng-class="{'bactive': bactive }" ng-controller="MainController">
+<div id="behind" ng-class="{'nactive': !bactive }" >
+    <div id="behindContent">
+        <h4>User input:</h4>
+        <blockquote>{{ last_user_input }}</blockquote>
+        <div class="divider center-block"></div>
+        <h4>User input breakdown:</h4>
+        <blockquote id="keywords_cont">
+            <div ng-repeat="x in last_res.keywords">
+                {{ x.text }}
+            </div>
+            <div ng-repeat="x in last_res.entities">
+                {{ x.text }}
+            </div>
+            <div ng-repeat="x in last_res.taxonomy">
+                {{ x.label }}
+            </div>
+        </blockquote>
+
+        <div class="divider center-block"></div>
+        <h4>Best DementorBot response:</h4>
+        <blockquote>
+            {{ evil_answer }}
+            <br>
+            <span ng-class="{'green':score<=1.5, 'red':score>1.5}">{{ score }}</span>
+        </blockquote>
+        <div class="divider center-block"></div>
+
+        <h4>Path:</h4>
+        <blockquote id="path">
+            <div ng-repeat="s in sowed" class="path"><div>{{ s }}</div></div>
+        </blockquote>
+
+    </div>
+    <div id="bar"><a href=""><span ng-click="bactive = !bactive" class="vertical-text">Behind the scenes</span></a></div>
+</div>
+<div id="chat">
+{% endverbatim %}
+<div id="top">
+    <div class="logo center-block">
+        <img class="center-block" src="{% static 'chat/logo.png' %}">
+    </div>
+</div>
+{% verbatim %}
+<div id="botContext">
+        <div id="context">
+            <div class="cd" ng-repeat='line in conversation'>
+                <span class="bot" ng-if="line.isBot">{{ line.text }}</span>
+                <li class="user" ng-if="!line.isBot">{{ line.text }}</li>
+                <div class="spacer" ng-if="line.lastof"></div>
+            </div>
+        </div>
+</div>
+
+<div id="inputdiv">
+    <form ng-submit="ask()">
+    <div class="form-group center-block">
+        <input autocomplete="off" type="text" ng-model="user_input" placeholder="Tell me something" class="form-control" id="user_input">
+        <!--<i class="fa fa-microphone mic" aria-hidden="true"></i>-->
+    </div>
+    </form>
+</div>
+</div>
+</body>
+</html>
+{% endverbatim %}
