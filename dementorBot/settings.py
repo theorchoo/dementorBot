@@ -25,7 +25,7 @@ SECRET_KEY = 'a5#7$isufgcbr#70ni3@zwtndi33k@rc_2-&d^u61n8$@+qm%@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['dementorbot.herokuapp.com']
+ALLOWED_HOSTS = ['dementorbot.herokuapp.com','52.59.217.232']
 
 
 # Application definition
