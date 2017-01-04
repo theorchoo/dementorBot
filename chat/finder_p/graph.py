@@ -6,7 +6,6 @@ import pymongo
 from pymongo import MongoClient
 import csv,codecs, cStringIO
 import itertools as it
-import matplotlib.pyplot as plt
 
 class UTF8Recoder:
     """
