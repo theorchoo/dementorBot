@@ -3,7 +3,7 @@ import cPickle as pickle
 import csv
 import os
 # import pymongo
-from pymongo import MongoClient
+# from pymongo import MongoClient
 import csv,codecs, cStringIO
 import itertools as it
 
@@ -95,51 +95,51 @@ def loadGraph(filename):
     return graph
 
 
-def mongo_to_graph(g):
-    i = 1
-    client = MongoClient()
-    db = client.sentences
-    collection = db.tb
-    cur = collection.find({"$where": "this.keywords.length > 1"})
-
-    for doc in cur:
-        sentence = doc['string']
-        combs = it.combinations(doc['keywords'], 2)
-
-        for comb in combs:
-            r = (comb[0]['strength'] + comb[1]['strength'] + 0.15) * 2
-
-            if not (comb[0]['word'] in g and comb[1]['word'] in g[comb[0]['word']]) \
-                    or g[comb[0]['word']][comb[1]['word']]['weight'] > r:
-                g.add_edge(comb[0]['word'], comb[1]['word'], weight=r, text=sentence)
-
-        if i % 10000 == 0:
-            print i
-        i += 1
-
-def rep_mongo_to_graph(g):
-    i = 1
-    client = MongoClient()
-    db = client.sentences
-    collection = db.bad
-    cur = collection.find({})
-    FINAL= "FINAL_EVIL"
-
-    for doc in cur:
-        sentence = doc['string']
-        g.add_edge(sentence,FINAL,weight=doc["sent"])
-
-        keys = doc['keywords']
-        for key in keys:
-            g.add_edge(key["word"],sentence, weight=key["strength"])
-
-        taxs = doc["taxonomy"]
-        for tax in taxs:
-            t = tax["label"].split('/')[-1]
-            g.add_edge(t,sentence,weight=tax["strength"])
-
-        print i
-        i += 1
+# def mongo_to_graph(g):
+#     i = 1
+#     client = MongoClient()
+#     db = client.sentences
+#     collection = db.tb
+#     cur = collection.find({"$where": "this.keywords.length > 1"})
+#
+#     for doc in cur:
+#         sentence = doc['string']
+#         combs = it.combinations(doc['keywords'], 2)
+#
+#         for comb in combs:
+#             r = (comb[0]['strength'] + comb[1]['strength'] + 0.15) * 2
+#
+#             if not (comb[0]['word'] in g and comb[1]['word'] in g[comb[0]['word']]) \
+#                     or g[comb[0]['word']][comb[1]['word']]['weight'] > r:
+#                 g.add_edge(comb[0]['word'], comb[1]['word'], weight=r, text=sentence)
+#
+#         if i % 10000 == 0:
+#             print i
+#         i += 1
+#
+# def rep_mongo_to_graph(g):
+#     i = 1
+#     client = MongoClient()
+#     db = client.sentences
+#     collection = db.bad
+#     cur = collection.find({})
+#     FINAL= "FINAL_EVIL"
+#
+#     for doc in cur:
+#         sentence = doc['string']
+#         g.add_edge(sentence,FINAL,weight=doc["sent"])
+#
+#         keys = doc['keywords']
+#         for key in keys:
+#             g.add_edge(key["word"],sentence, weight=key["strength"])
+#
+#         taxs = doc["taxonomy"]
+#         for tax in taxs:
+#             t = tax["label"].split('/')[-1]
+#             g.add_edge(t,sentence,weight=tax["strength"])
+#
+#         print i
+#         i += 1
 
 
 def make_tax_graph(g):
