@@ -2,7 +2,7 @@ import networkx as nx
 import cPickle as pickle
 import csv
 import os
-import pymongo
+# import pymongo
 from pymongo import MongoClient
 import csv,codecs, cStringIO
 import itertools as it
