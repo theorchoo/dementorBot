@@ -25,7 +25,7 @@ SECRET_KEY = 'a5#7$isufgcbr#70ni3@zwtndi33k@rc_2-&d^u61n8$@+qm%@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['dementorbot.herokuapp.com']
 
 
 # Application definition
@@ -120,3 +120,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
